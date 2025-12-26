@@ -1,26 +1,28 @@
-import { useState } from "react"
-import confetti from 'canvas-confetti'
+import { useEffect, useState } from "react"
+import confetti from "canvas-confetti"
+
+const GIF_URL =
+  "https://i.pinimg.com/originals/b3/66/20/b366201407b7d06f4622d1f5d30beec4.gif"
 
 export const useChangeElements = () => {
-    const [index, setIndex] = useState(0)
-    const [textP, setTextP] = useState('Vamos, respondeme! ')
-    const [image, setImage] = useState('https://i.pinimg.com/originals/f6/a5/f7/f6a5f7ddff1f05cbcc560256b9f98c2e.gif')
+  const [textP] = useState(
+    "Me gustas, y me gusta aún más saber que formas parte de mi vida."
+  )
+  const [image, setImage] = useState(GIF_URL)
 
-    const options = ['Segura?', 'Segurisima?', 'Estas completamente segura?', 'No te arrepentiras?', 'Pero si estas segura?', 'No hay vuelta atras', 'No hay devoluciones', 'No hay garantias', 'No hay reembolsos', 'No hay cambios', 'No hay nada', 'No hay', 'Que no hay']
+  // Confetti solo una vez
+  useEffect(() => {
+    confetti()
+  }, [])
 
-    const handleButtonNo = () => {
-        setIndex(index + 1)
-        setImage('https://i.pinimg.com/originals/99/cf/86/99cf860a99daff075a50f195dbfa5d3f.gif')
-        setTextP(options.at(index))
-        
-        if(index === options.length - 1) setIndex(0)
-    }
+  // Reiniciar GIF cada 2 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setImage(`${GIF_URL}?t=${Date.now()}`)
+    }, 2000)
 
-    const handleButtonYes = () => {
-        setImage("https://i.pinimg.com/originals/e4/9d/7b/e49d7b7e965f09e31b498314b02e3662.gif")
-        setTextP('Gracias por aceptar, te amo mucho <3')
-        confetti()
-    }
+    return () => clearInterval(interval) // limpiar al desmontar
+  }, [])
 
-    return { handleButtonNo, handleButtonYes, textP, image }
+  return { textP, image }
 }
